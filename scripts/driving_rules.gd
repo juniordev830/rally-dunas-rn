@@ -20,3 +20,23 @@ static func reached_checkpoint(distance: float, radius: float = 6.0) -> bool:
 
 static func speed_kmh(meters_per_second: float) -> int:
 	return int(round(absf(meters_per_second) * 3.6))
+
+
+## Medal thresholds are arcade goals, not real rally classifications.
+static func medal_for_time(seconds: float) -> String:
+	if not is_finite(seconds) or seconds < 0.0:
+		return "INVALIDO"
+	if seconds <= 55.0:
+		return "OURO"
+	if seconds <= 90.0:
+		return "PRATA"
+	return "BRONZE"
+
+
+## Timed split between two sequential checkpoints.
+static func split_seconds(start_time: float, finish_time: float) -> float:
+	if not is_finite(start_time) or not is_finite(finish_time):
+		return -1.0
+	if start_time < 0.0 or finish_time < start_time:
+		return -1.0
+	return finish_time - start_time
