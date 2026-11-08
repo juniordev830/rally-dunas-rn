@@ -9,6 +9,9 @@ var car: DuneRallyCar
 var camera: Camera3D
 var hud: Label
 var elapsed := 0.0
+var last_checkpoint_time := 0.0
+var last_split := 0.0
+var medal := ""
 var next_checkpoint := 0
 var finished := false
 var checkpoints := [
@@ -151,9 +154,12 @@ func _process(delta: float) -> void:
 		var spot: Vector2 = checkpoints[next_checkpoint]
 		var distance := Vector2(car.global_position.x, car.global_position.z).distance_to(spot)
 		if Rules.reached_checkpoint(distance):
+			last_split = Rules.split_seconds(last_checkpoint_time, elapsed)
+			last_checkpoint_time = elapsed
 			next_checkpoint += 1
 			if next_checkpoint == checkpoints.size():
 				finished = true
+				medal = Rules.medal_for_time(elapsed)
 	_refresh_hud()
 	if is_instance_valid(camera) and is_instance_valid(car):
 		var offset := car.global_transform.basis.z * 12.0 + Vector3(0, 6.0, 0)
@@ -166,6 +172,7 @@ func _refresh_hud() -> void:
 		return
 	var checkpoint_text := "CONCLUIDO" if finished else "%d / %d" % [next_checkpoint + 1, checkpoints.size()]
 	var message := "RALLY FINALIZADO! R: REINICIAR" if finished else "SIGA OS MARCADORES"
-	hud.text = "RALLY DUNAS RN  •  PROTOTIPO\nVELOCIDADE: %d km/h    CHECKPOINT: %s\nTEMPO: %.1f s       %s\nWASD / SETAS: DIRIGIR       R: REINICIAR" % [
-		Rules.speed_kmh(car.speed), checkpoint_text, elapsed, message
+	var split_text := "MEDALHA: %s" % medal if finished else "ULTIMO TRECHO: %.1f s" % last_split
+	hud.text = "RALLY DUNAS RN  •  PROTOTIPO\nVELOCIDADE: %d km/h    CHECKPOINT: %s\nTEMPO: %.1f s       %s\n%s\nWASD / SETAS: DIRIGIR       R: REINICIAR" % [
+		Rules.speed_kmh(car.speed), checkpoint_text, elapsed, message, split_text
 	]
