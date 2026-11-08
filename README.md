@@ -27,3 +27,10 @@ A CI também inicia a cena em Godot headless por alguns frames.
 
 ## Limitações
 Não há física de pneus realista, colisão de rochas, múltiplos carros, áudio, savegame, pista de competição oficial ou mapas geográficos reais. Os visuais são gerados por código e ainda precisam de validação na janela do editor. O projeto é uma demonstração de programação gráfica e simulação.
+
+
+## Medalhas e tempo por trecho (novo)
+
+A corrida agora informa o tempo gasto desde o checkpoint anterior. Ao completar os cinco checkpoints em ordem, o jogador recebe uma medalha conforme o tempo total: **ouro até 55 segundos**, **prata até 90 segundos** e **bronze acima disso**. Os limites são metas de um jogo, não classificações oficiais de rally.
+
+A classificação e o cálculo de tempo por trecho estão isolados em `scripts/driving_rules.gd`, com testes de valores de fronteira e entradas inválidas. Os tempos reiniciam ao pressionar **R**, sem salvamento permanente de recordes.
