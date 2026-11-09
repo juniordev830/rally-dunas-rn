@@ -14,6 +14,7 @@ var last_checkpoint_time := 0.0
 var last_split := 0.0
 var medal := ""
 var best_time := -1.0
+var new_record := false
 var next_checkpoint := 0
 var finished := false
 var checkpoints := [
@@ -164,6 +165,7 @@ func _process(delta: float) -> void:
 				finished = true
 				medal = Rules.medal_for_time(elapsed)
 				if Rules.beats_record(elapsed, best_time):
+					new_record = true
 					best_time = elapsed
 					_save_best_time()
 	_refresh_hud()
@@ -178,10 +180,20 @@ func _refresh_hud() -> void:
 		return
 	var checkpoint_text := "CONCLUIDO" if finished else "%d / %d" % [next_checkpoint + 1, checkpoints.size()]
 	var message := "RALLY FINALIZADO! R: REINICIAR" if finished else "SIGA OS MARCADORES"
+	if finished and new_record:
+		message = "NOVO RECORDE PESSOAL! R: REINICIAR"
 	var split_text := "MEDALHA: %s" % medal if finished else "ULTIMO TRECHO: %.1f s" % last_split
 	var record_text := "%.1f s" % best_time if Rules.valid_record_time(best_time) else "SEM REGISTRO"
-	hud.text = "RALLY DUNAS RN  •  PROTOTIPO\nVELOCIDADE: %d km/h    CHECKPOINT: %s\nTEMPO: %.1f s       %s\n%s\nRECORDE PESSOAL: %s\nWASD / SETAS: DIRIGIR       R: REINICIAR" % [
-		Rules.speed_kmh(car.speed), checkpoint_text, elapsed, message, split_text, record_text
+	var guide := "TODOS OS CHECKPOINTS CONCLUIDOS"
+	if not finished:
+		var spot: Vector2 = checkpoints[next_checkpoint]
+		var current := Vector2(car.global_position.x, car.global_position.z)
+		var to_target: Vector2 = spot - current
+		var facing := -car.global_transform.basis.z
+		var forward := Vector2(facing.x, facing.z)
+		guide = "PROXIMO PORTAL: %.0f m / %s" % [to_target.length(), Rules.checkpoint_direction(forward, to_target)]
+	hud.text = "RALLY DUNAS RN  •  PROTOTIPO\nVELOCIDADE: %d km/h    CHECKPOINT: %s\nTEMPO: %.1f s       %s\n%s\n%s\nRECORDE PESSOAL: %s\nWASD / SETAS: DIRIGIR       R: REINICIAR" % [
+		Rules.speed_kmh(car.speed), checkpoint_text, elapsed, message, split_text, guide, record_text
 	]
 
 func _load_best_time() -> void:
