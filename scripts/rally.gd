@@ -4,6 +4,7 @@ const Rules = preload("res://scripts/driving_rules.gd")
 const Car = preload("res://scripts/car.gd")
 const TERRAIN_HALF := 88.0
 const TERRAIN_STEPS := 44
+const RECORD_PATH := "user://rally_best_time.txt"
 
 var car: DuneRallyCar
 var camera: Camera3D
@@ -12,6 +13,7 @@ var elapsed := 0.0
 var last_checkpoint_time := 0.0
 var last_split := 0.0
 var medal := ""
+var best_time := -1.0
 var next_checkpoint := 0
 var finished := false
 var checkpoints := [
@@ -24,6 +26,7 @@ var checkpoints := [
 
 
 func _ready() -> void:
+	_load_best_time()
 	_create_environment()
 	_create_terrain()
 	_create_landmarks()
@@ -160,6 +163,9 @@ func _process(delta: float) -> void:
 			if next_checkpoint == checkpoints.size():
 				finished = true
 				medal = Rules.medal_for_time(elapsed)
+				if Rules.beats_record(elapsed, best_time):
+					best_time = elapsed
+					_save_best_time()
 	_refresh_hud()
 	if is_instance_valid(camera) and is_instance_valid(car):
 		var offset := car.global_transform.basis.z * 12.0 + Vector3(0, 6.0, 0)
@@ -173,6 +179,23 @@ func _refresh_hud() -> void:
 	var checkpoint_text := "CONCLUIDO" if finished else "%d / %d" % [next_checkpoint + 1, checkpoints.size()]
 	var message := "RALLY FINALIZADO! R: REINICIAR" if finished else "SIGA OS MARCADORES"
 	var split_text := "MEDALHA: %s" % medal if finished else "ULTIMO TRECHO: %.1f s" % last_split
-	hud.text = "RALLY DUNAS RN  •  PROTOTIPO\nVELOCIDADE: %d km/h    CHECKPOINT: %s\nTEMPO: %.1f s       %s\n%s\nWASD / SETAS: DIRIGIR       R: REINICIAR" % [
-		Rules.speed_kmh(car.speed), checkpoint_text, elapsed, message, split_text
+	var record_text := "%.1f s" % best_time if Rules.valid_record_time(best_time) else "SEM REGISTRO"
+	hud.text = "RALLY DUNAS RN  •  PROTOTIPO\nVELOCIDADE: %d km/h    CHECKPOINT: %s\nTEMPO: %.1f s       %s\n%s\nRECORDE PESSOAL: %s\nWASD / SETAS: DIRIGIR       R: REINICIAR" % [
+		Rules.speed_kmh(car.speed), checkpoint_text, elapsed, message, split_text, record_text
 	]
+
+func _load_best_time() -> void:
+	if not FileAccess.file_exists(RECORD_PATH):
+		return
+	var file := FileAccess.open(RECORD_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var loaded: float = file.get_as_text().strip_edges().to_float()
+	if Rules.valid_record_time(loaded):
+		best_time = loaded
+
+
+func _save_best_time() -> void:
+	var file := FileAccess.open(RECORD_PATH, FileAccess.WRITE)
+	if file != null:
+		file.store_string("%.3f" % best_time)
