@@ -40,3 +40,9 @@ A classificação e o cálculo de tempo por trecho estão isolados em `scripts/d
 Ao concluir os cinco checkpoints, o jogo compara seu tempo com o recorde salvo anteriormente. Se for sua primeira conclusão ou um tempo melhor, o novo recorde é gravado em `user://rally_best_time.txt`, no diretório de dados do Godot para este projeto. O HUD mostra `RECORDE PESSOAL` mesmo depois de reiniciar o jogo.
 
 O tempo só é registrado ao concluir a corrida. Empates, tempos inválidos e tentativas mais lentas não substituem o recorde. Os critérios são testados em `tests/test_driving_rules.gd`.
+
+### Navegação até os portais
+
+O HUD agora apresenta a **distância ao próximo checkpoint** e indica se ele fica à frente, atrás, à esquerda ou à direita **em relação ao sentido atual do carro**. Assim, o jogador não precisa depender apenas dos pilares coloridos para se orientar.
+
+Ao superar um tempo previamente salvo, a chegada exibe **NOVO RECORDE PESSOAL!**. Uma partida mais lenta mantém o recorde anterior. A orientação entre carro e checkpoint é testada sem exigir renderização 3D.
