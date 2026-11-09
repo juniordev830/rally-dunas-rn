@@ -40,3 +40,13 @@ static func split_seconds(start_time: float, finish_time: float) -> float:
 	if start_time < 0.0 or finish_time < start_time:
 		return -1.0
 	return finish_time - start_time
+
+## Personal record comparisons are kept independent from file storage.
+static func valid_record_time(seconds: float) -> bool:
+	return is_finite(seconds) and seconds > 0.0
+
+
+static func beats_record(finish_time: float, previous_best: float) -> bool:
+	if not valid_record_time(finish_time):
+		return false
+	return not valid_record_time(previous_best) or finish_time < previous_best
