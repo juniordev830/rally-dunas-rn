@@ -50,3 +50,19 @@ static func beats_record(finish_time: float, previous_best: float) -> bool:
 	if not valid_record_time(finish_time):
 		return false
 	return not valid_record_time(previous_best) or finish_time < previous_best
+
+## Direction of the next checkpoint relative to the current vehicle heading.
+static func checkpoint_direction(forward: Vector2, to_checkpoint: Vector2) -> String:
+	if not forward.is_finite() or not to_checkpoint.is_finite():
+		return "DESCONHECIDA"
+	if to_checkpoint.length_squared() < 0.000001:
+		return "CHEGOU"
+	if forward.length_squared() < 0.000001:
+		return "DESCONHECIDA"
+	var heading := forward.normalized()
+	var right := Vector2(-heading.y, heading.x)
+	var ahead: float = heading.dot(to_checkpoint)
+	var sideways: float = right.dot(to_checkpoint)
+	if absf(ahead) >= absf(sideways):
+		return "FRENTE" if ahead >= 0.0 else "ATRAS"
+	return "DIREITA" if sideways > 0.0 else "ESQUERDA"
