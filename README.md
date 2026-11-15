@@ -1,8 +1,8 @@
 # Rally Dunas RN
 
-Jogo de rally 3D **em planejamento**, com ambientação fictícia inspirada nas dunas e paisagens do Rio Grande do Norte.
+Protótipo de rally inspirado em paisagens fictícias do Rio Grande do Norte, com **modelo cinemático 2D em Python**. Direção, checkpoints, cronômetro, pausa e reinício já existem no código; pista 3D e jogo visual continuam planejados.
 
-> **Estado atual:** apenas README e licença; não há veículo controlável, pistas, cenas, física ou build jogável.
+> **Estado da `main`:** `core.py`, testes de regras e workflow de CI. Não há ainda pista renderizada, assets 3D nem build jogável.
 
 ## Primeira pista de teste
 
@@ -27,14 +27,14 @@ Construir um circuito curto com terreno estilizado, veículo demonstrativo, linh
 ## Etapas de produção
 
 - [ ] Escolher engine, versão e modelo de controle.
-- [ ] Criar domínio de checkpoint e cronometragem com testes.
+- [x] Criar domínio de checkpoint e cronometragem com testes.
 - [ ] Construir pequeno terreno fictício e veículo provisório.
 - [ ] Implementar HUD e reinício de corrida.
 - [ ] Capturar gameplay real e escrever instruções de build para PC.
 
 Usar referências visuais autorizadas e evitar representar áreas sensíveis como pistas liberadas para veículos.
 
-## Primeiro incremento de código (em revisão)
+## Primeiro incremento de código (disponível na `main`)
 
 Veículo cinemático 2D, passagem obrigatória por checkpoints, cronometragem, pausa e reinício.
 
