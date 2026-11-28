@@ -1,5 +1,7 @@
 # Rally Dunas RN
 
+**Navegação** · [Jogo em Godot](#jogo-em-godot) · [Núcleo Python e planejamento](#núcleo-python-e-planejamento) · [Código e estudo](docs/ENGENHARIA_REVERSA.md)
+
 ## Jogo em Godot
 
 **Estado:** primeiro MVP experimental de rally 3D em **Godot 4**, inspirado visualmente nas paisagens de dunas do Rio Grande do Norte (não é reprodução cartográfica real).
@@ -100,3 +102,9 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 O GitHub Actions executa a suíte em cada PR. A lista de tarefas do roteiro acima descreve o objetivo completo do jogo e não deve ser interpretada como pronto para publicação.
+
+## Código e roteiro de estudo
+
+Como testaria que um checkpoint visitado fora da ordem não antecipa a chegada? O [guia de engenharia reversa](docs/ENGENHARIA_REVERSA.md) reúne o mapa dos módulos e uma pergunta técnica baseada no projeto.
+
+Mantido por [João Junior](https://github.com/juniordev830).
